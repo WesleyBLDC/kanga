@@ -61,7 +61,7 @@ async function main() {
    * TODO: Define your backend routes after initializing the jwt middleware.
    */
   router.get("/custom-route", async (req, res) => {
-    console.log("request", req.canva);
+    console.log("request: ", req.canva);
     res.status(200).send({
       appId: req.canva.appId,
       userId: req.canva.userId,

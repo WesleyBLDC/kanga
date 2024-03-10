@@ -10,6 +10,7 @@ import {
   Swatch,
   TextInput,
   LoadingIndicator,
+  MultilineInput,
 } from "@canva/app-ui-kit";
 import { requestOpenExternalUrl } from "@canva/platform";
 import type { NativeEmbedElement } from "@canva/design";
@@ -203,7 +204,7 @@ export const App = () => {
         const jsonContentString = parseJsonFromString(body.response);
 
         // Parse the JSON string into an object
-        console.log(jsonContentString);
+        console.log("json content string: " + jsonContentString);
         await handleNewClick(jsonContentString);
         event.target.parentNode.style = "";
         event.target.style = "";
@@ -227,18 +228,6 @@ export const App = () => {
     event.target.style = "";
     event.target.disabled = false;
   };
-
-  // // Function to process and manipulate the response body
-  // function processResponseBody(responseBody: any) {
-  //   // Assuming responseBody contains a property with the desired text
-  //   // Adjust the following line according to the actual structure of your responseBody
-  //   const text = responseBody?.text || ''; // Adjust this based on your actual response structure
-
-  //   // Process the text as needed, for example, getting the first 30 characters
-  //   const processedText = text.slice(0, 30);
-
-  //   return processedText;
-  // }
 
   async function handleNewClick(responseBody) {
     addPage({
@@ -310,39 +299,6 @@ export const App = () => {
       await handleClick(activeColor);
       await new Promise((resolve) => setTimeout(resolve, 5000));
     }
-
-    // responseBody.slides.forEach( (slide) => {
-    //    addPage({
-    //     elements: [
-    //       // headerElement
-    //       {
-    //         type: "GROUP",
-    //         children: [
-    //           {
-    //             type: "TEXT",
-    //             children: [slide.heading],
-    //             top:0,
-    //             left:0,
-    //             width:200,
-    //           },
-    //           {
-    //             type: "TEXT",
-    //             children: [slide.body],
-    //             top:0,
-    //             left:0,
-    //             width:200,
-    //             // height: "auto",
-    //           },
-    //         ],
-    //         top:0,
-    //         left:0,
-    //         width: 500,
-    //         height: "auto"
-    //       },
-    //     ],
-    //   });
-    //   new Promise(resolve => setTimeout(resolve, 3500));
-    // });
   }
 
   return (
@@ -410,45 +366,24 @@ export const App = () => {
               Github
             </Link>
           </Text>
+          <MultilineInput
+            autoGrow
+            // onBlur={function noRefCheck(){}}
+            // onChange={function noRefCheck(){}}
+            // onFocus={function noRefCheck(){}}
+            // onKeyDown={function noRefCheck(){}}
+            placeholder="This is an optional placeholder."
+          />
+          <Button
+            variant="primary"
+            type="submit"
+            stretch
+          >
+            Generate Presentation New
+          </Button>
         </Rows>
       </form>
     </div>
   );
 };
 
-// const [state, setState] = useState<State>("idle");
-// const [responseBody, setResponseBody] = useState<unknown | undefined>(
-//   undefined
-// );
-
-// const sendGetRequest = async () => {
-//   try {
-//     setState("loading");
-//     const token = await auth.getCanvaUserToken();
-//     const res = await fetch(BACKEND_URL, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-
-//     const body = await res.json();
-//     setResponseBody(body);
-//     setState("success");
-//   } catch (error) {
-//     setState("error");
-//     console.error(error);
-//   }
-// };
-
-//? random logic
-// function getRandomLink(links: { url: string }[]) {
-//   const randomIndex = Math.floor(Math.random() * links.length);
-//   return links[randomIndex];
-// }
-// const randomNum = Math.floor(Math.random() * 4) + 1;
-// const randomLink = getRandomLink(links).url;
-// const uniqueUrl = `${randomLink}?random=${Math.random()}`;
-// let start = (randomNum - 1) * 3;
-// let end = randomNum === 4 ? links.length : start + 3;
-// const randomLink =
-//   links[Math.floor(Math.random() * (end - start)) + start].url;
