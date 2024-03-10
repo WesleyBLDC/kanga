@@ -164,12 +164,17 @@ export const App = () => {
   const [activeColor, setActiveColor] = React.useState<string>(colors[0].name);
   const [link, setLink] = useState("");
   const [responseContent, setResponseContent] = useState("");
+  const [presentationContent, setPresentationContent] = useState("");
+  const [isContentReadyForEdit, setIsContentReadyForEdit] = useState(false); // New state to control the editing flow
+
 
   const handleSubmit = async (event) => {
-    event.target.parentNode.style = "background: gray;";
-    event.target.style = "background: gray;";
-    event.target.disabled = true;
     event.preventDefault();
+
+    // event.target.parentNode.style = "background: gray;";
+    // event.target.style = "background: gray;";
+    // event.target.disabled = true;
+    // event.preventDefault();
     try {
       const response = await extractText(link);
 
@@ -194,22 +199,20 @@ export const App = () => {
           }),
         });
 
-        // const body = await res.json();
         const body = await res.json();
-        // const processedResponse = processResponseBody(body);
-
-        // The content includes JSON within a string, wrapped in triple backticks.
-        // We need to extract the JSON part. This might require more sophisticated parsing,
-        // especially if the triple backticks can be part of the actual content.
         const jsonContentString = parseJsonFromString(body.response);
-
-        // Parse the JSON string into an object
         console.log("json content string: " + jsonContentString);
-        await handleNewClick(jsonContentString);
-        event.target.parentNode.style = "";
-        event.target.style = "";
-        event.target.disabled = false;
-        // setResponseBody(body);
+
+        setPresentationContent(JSON.stringify(body.response, null, 2)); // Populate the MultilineInput
+        setIsContentReadyForEdit(true); // Enable the editing phase
+
+    //     // Parse the JSON string into an object
+    //     console.log("json content string: " + jsonContentString);
+    //     await handleNewClick(jsonContentString);
+    //     event.target.parentNode.style = "";
+    //     event.target.style = "";
+    //     event.target.disabled = false;
+    //     // setResponseBody(body);
       } catch (error) {
         console.error(error);
         event.target.parentNode.style = "";
@@ -217,89 +220,97 @@ export const App = () => {
         event.target.disabled = false;
       }
 
-      console.log(response);
+    //   console.log(response);
     } catch (error) {
       console.error("Failed to fetch data:", error);
       event.target.parentNode.style = "";
       event.target.style = "";
       event.target.disabled = false;
     }
-    event.target.parentNode.style = "";
-    event.target.style = "";
-    event.target.disabled = false;
+    // event.target.parentNode.style = "";
+    // event.target.style = "";
+    // event.target.disabled = false;
   };
 
-  async function handleNewClick(responseBody) {
-    addPage({
-      elements: [
-        // headerElement
-        {
-          type: "GROUP",
-          children: [
-            {
-              type: "TEXT",
-              children: [responseBody.title], // Center align -- run calculations to find center of page - content offset
-              top: 0,
-              left: 50,
-              width: 700,
-              fontSize: 50,
-              fontWeight: "bold",
-            },
-            {
-              type: "TEXT",
-              children: [responseBody.authors], // Center align -- run calculations to find center of page - content offset
-              top: 300,
-              left: 50,
-              width: 700,
-              fontSize: 35,
-            },
-          ],
-          top: 200,
-          left: 50,
-          width: 700,
-          height: "auto",
-        },
-      ],
-    });
-    await handleClick(activeColor);
-    await handleClick(activeColor);
-    // Use a for...of loop to iterate over slides, allowing for await within the loop
-    for (const slide of responseBody.slides) {
-      addPage({
-        elements: [
-          {
-            type: "GROUP",
-            children: [
-              {
-                type: "TEXT",
-                children: [slide.heading],
-                top: 0,
-                left: 0,
-                width: 700,
-                fontSize: 35,
-                textAlign: "center",
-              },
-              {
-                type: "TEXT",
-                children: [slide.body],
-                top: 150,
-                left: 0,
-                width: 700,
-                fontSize: 25,
-              },
-            ],
-            top: 50,
-            left: 50,
-            width: 700,
-            height: "auto",
-          },
-        ],
-      });
-      await handleClick(activeColor);
-      await handleClick(activeColor);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-    }
-  }
+  const handleCreateSlides = async () => {
+    // Assuming `presentationContent` is now a JSON string. Parse it and use it to create slides.
+    const presentationData = JSON.parse(presentationContent);
+    // Implement slide creation logic here, similar to the original handleNewClick
+    // This would involve iterating over `presentationData.slides` and calling `addPage` for each
+    console.log("presentation shit: " + presentationData)
+  };
+
+  // async function handleNewClick(responseBody) {
+  //   addPage({
+  //     elements: [
+  //       // headerElement
+  //       {
+  //         type: "GROUP",
+  //         children: [
+  //           {
+  //             type: "TEXT",
+  //             children: [responseBody.title], // Center align -- run calculations to find center of page - content offset
+  //             top: 0,
+  //             left: 50,
+  //             width: 700,
+  //             fontSize: 50,
+  //             fontWeight: "bold",
+  //           },
+  //           {
+  //             type: "TEXT",
+  //             children: [responseBody.authors], // Center align -- run calculations to find center of page - content offset
+  //             top: 300,
+  //             left: 50,
+  //             width: 700,
+  //             fontSize: 35,
+  //           },
+  //         ],
+  //         top: 200,
+  //         left: 50,
+  //         width: 700,
+  //         height: "auto",
+  //       },
+  //     ],
+  //   });
+  //   await handleClick(activeColor);
+  //   await handleClick(activeColor);
+  //   // Use a for...of loop to iterate over slides, allowing for await within the loop
+  //   for (const slide of responseBody.slides) {
+  //     addPage({
+  //       elements: [
+  //         {
+  //           type: "GROUP",
+  //           children: [
+  //             {
+  //               type: "TEXT",
+  //               children: [slide.heading],
+  //               top: 0,
+  //               left: 0,
+  //               width: 700,
+  //               fontSize: 35,
+  //               textAlign: "center",
+  //             },
+  //             {
+  //               type: "TEXT",
+  //               children: [slide.body],
+  //               top: 150,
+  //               left: 0,
+  //               width: 700,
+  //               fontSize: 25,
+  //             },
+  //           ],
+  //           top: 50,
+  //           left: 50,
+  //           width: 700,
+  //           height: "auto",
+  //         },
+  //       ],
+  //     });
+  //     await handleClick(activeColor);
+  //     await handleClick(activeColor);
+  //     await new Promise((resolve) => setTimeout(resolve, 5000));
+  //   }
+  // }
 
   return (
     <div className={styles.scrollContainer}>
@@ -372,12 +383,16 @@ export const App = () => {
             // onChange={function noRefCheck(){}}
             // onFocus={function noRefCheck(){}}
             // onKeyDown={function noRefCheck(){}}
+            value = {presentationContent}
+            onChange={(value) => setPresentationContent(value)}
+            // visible={isContentReadyForEdit}
             placeholder="This is an optional placeholder."
           />
           <Button
             variant="primary"
             type="submit"
             stretch
+            onClick={handleCreateSlides}
           >
             Generate Presentation New
           </Button>
